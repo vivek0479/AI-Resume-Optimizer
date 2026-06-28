@@ -1,0 +1,1111 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* Global Reset & Body Styles */
+html, body, [data-testid="stAppViewContainer"] {
+    background-color: #F8FAFC !important;
+    font-family: 'Inter', sans-serif !important;
+    color: #1F2937 !important;
+}
+
+/* Hide Default Streamlit Elements */
+header[data-testid="stHeader"] {
+    display: none !important;
+}
+footer {
+    display: none !important;
+}
+#MainMenu {
+    display: none !important;
+}
+div[data-testid="stToolbar"] {
+    display: none !important;
+}
+
+/* Streamlit Block Container Override */
+.block-container {
+    max-width: 1200px !important;
+    padding-top: 2rem !important;
+    padding-bottom: 3rem !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+}
+
+/* Base Spacing & Container */
+.main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+}
+
+/* Navigation Bar */
+.navbar-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 0px;
+    margin-bottom: 24px;
+}
+
+.navbar {
+    width: 98%;
+    height: 72px;
+    background-color: #FFFFFF;
+    border-radius: 18px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+    border: 1px solid #CBD5E1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 24px;
+    box-sizing: border-box;
+}
+
+.navbar a {
+    text-decoration: none !important;
+    color: inherit !important;
+}
+
+.navbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 18px;
+    color: #1F2937 !important;
+    text-decoration: none !important;
+}
+
+.navbar-menu {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.nav-item {
+    font-weight: 500;
+    font-size: 14px;
+    color: #1F2937 !important;
+    text-decoration: none !important;
+    padding: 8px 14px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color 0.15s;
+    white-space: nowrap;
+}
+
+.nav-item:hover {
+    background-color: #F2F1EF;
+}
+
+.nav-item.active {
+    background-color: #F2F1EF;
+}
+
+.navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* Apps Grid Dropdown */
+.apps-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.apps-grid-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: #64748B;
+    padding: 8px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.apps-grid-btn:hover, .apps-grid-btn:focus {
+    background-color: #F2F1EF;
+    outline: none;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 48px;
+    background-color: #FFFFFF;
+    box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.08);
+    border: 1px solid #CBD5E1;
+    border-radius: 12px;
+    min-width: 180px;
+    z-index: 9999;
+    padding: 8px 0;
+}
+
+.apps-dropdown:focus-within .dropdown-content {
+    display: block;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    color: #1F2937 !important;
+    text-decoration: none !important;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.dropdown-item:hover {
+    background-color: #F2F1EF;
+}
+
+/* Login Button */
+.login-btn {
+    background-color: #0066FF;
+    color: #FFFFFF;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.login-btn:hover {
+    background-color: #0052FF;
+}
+
+/* Text Typographies */
+.hero-title {
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 1.15;
+    color: #1F2937;
+    text-align: center;
+    margin: 0;
+}
+
+.hero-subtitle {
+    font-size: 16px;
+    color: #64748B;
+    text-align: center;
+    max-width: 600px;
+    line-height: 1.5;
+    margin: 0 auto !important;
+}
+
+/* Home Upload Page Wrapper */
+.home-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    width: 100%;
+}
+
+.document-illustration {
+    font-size: 64px;
+    margin-bottom: 8px;
+    text-align: center;
+    width: 100%;
+}
+
+/* Native Streamlit File Uploader Direct Styling */
+div[data-testid="stFileUploader"] {
+    width: 780px !important;
+    max-width: 100% !important;
+    margin: 16px auto !important;
+}
+
+/* Hide default label space entirely */
+div[data-testid="stFileUploader"] > label {
+    display: none !important;
+}
+
+/* Style the native dropzone */
+div[data-testid="stFileUploaderDropzone"] {
+    height: 260px !important;
+    border: 2px dashed #0066FF !important;
+    background-color: #FFFFFF !important;
+    border-radius: 22px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    cursor: pointer !important;
+    box-sizing: border-box !important;
+    padding: 24px !important;
+    transition: border-color 0.2s, background-color 0.2s !important;
+}
+
+div[data-testid="stFileUploaderDropzone"]:hover {
+    border-color: #0052FF !important;
+    background-color: #F8FAFC !important;
+}
+
+/* Customize the native SVG icon */
+div[data-testid="stFileUploaderDropzone"] svg {
+    width: 48px !important;
+    height: 48px !important;
+    color: #0066FF !important;
+    margin-bottom: 12px !important;
+}
+
+/* Replace default "Drag and drop file here" text */
+div[data-testid="stFileUploaderDropzoneInputDescription"] {
+    font-size: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+div[data-testid="stFileUploaderDropzoneInputDescription"]::after {
+    content: "Drag & Drop Resume" !important;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    color: #1F2937 !important;
+    display: block !important;
+    margin-bottom: 4px !important;
+}
+
+/* Replace default "Limit 200MB" text */
+div[data-testid="stFileUploaderDropzone"] span {
+    font-size: 0 !important;
+}
+div[data-testid="stFileUploaderDropzone"] span::after {
+    content: "PDF or DOCX • Maximum 10 MB" !important;
+    font-size: 14px !important;
+    color: #64748B !important;
+    display: block !important;
+}
+
+/* Style the native 'Browse files' button to look like a premium blue button */
+div[data-testid="stFileUploaderDropzone"] button[data-testid="stBaseButton-secondary"] {
+    background-color: #0066FF !important;
+    color: #FFFFFF !important;
+    border: none !important;
+    padding: 10px 24px !important;
+    border-radius: 12px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    margin-top: 12px !important;
+    cursor: pointer !important;
+    width: auto !important;
+    height: auto !important;
+}
+div[data-testid="stFileUploaderDropzone"] button[data-testid="stBaseButton-secondary"]:hover {
+    background-color: #0052FF !important;
+    color: #FFFFFF !important;
+}
+
+/* Footer Section */
+.footer-text {
+    font-size: 12px;
+    color: #64748B;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 16px;
+    width: 100%;
+}
+
+/* Cards & Layout Grid */
+.card {
+    background-color: #FFFFFF;
+    border: 1px solid #CBD5E1;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.02);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: 100%;
+}
+
+.card-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1F2937;
+    margin: 0;
+}
+
+.section-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1F2937;
+    margin: 0;
+}
+
+/* Layout Grid - 4 Columns */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.grid-span-2 {
+    grid-column: span 2;
+}
+
+.grid-span-3 {
+    grid-column: span 3;
+}
+
+.grid-span-4 {
+    grid-column: span 4;
+}
+
+/* Chips/Badges */
+.chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.chip-success {
+    background-color: #DCFCE7;
+    color: #16A34A;
+}
+
+.chip-warning {
+    background-color: #FEF3C7;
+    color: #D97706;
+}
+
+.chip-error {
+    background-color: #FEE2E2;
+    color: #DC2626;
+}
+
+.chip-info {
+    background-color: #DBEAFE;
+    color: #0066FF;
+}
+
+/* Linear Progress Bar */
+.progress-bar-container {
+    width: 100%;
+    background-color: #E2E8F0;
+    border-radius: 9999px;
+    height: 8px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    border-radius: 9999px;
+    transition: width 0.3s ease;
+}
+
+/* Circular Progress Circle */
+.circular-progress {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.circular-progress svg {
+    width: 100px;
+    height: 100px;
+    transform: rotate(-90deg);
+}
+
+.circular-progress circle {
+    fill: none;
+    stroke-width: 8;
+    stroke-linecap: round;
+}
+
+.circular-progress .bg-circle {
+    stroke: #E2E8F0;
+}
+
+.circular-progress .fg-circle {
+    stroke: #0066FF;
+    transition: stroke-dashoffset 0.3s ease;
+}
+
+.circular-progress-text {
+    position: absolute;
+    font-size: 24px;
+    font-weight: 700;
+    color: #1F2937;
+}
+
+/* Skeleton Loading State */
+.skeleton-loader {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px 0;
+}
+
+.skeleton-item {
+    background: linear-gradient(90deg, #E2E8F0 25%, #CBD5E1 50%, #E2E8F0 75%);
+    background-size: 200% 100%;
+    animation: loading-animation 1.5s infinite;
+    border-radius: 8px;
+}
+
+@keyframes loading-animation {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Custom Standard Action Buttons */
+.btn {
+    width: 100%;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.btn-primary {
+    background-color: #0066FF;
+    color: #FFFFFF;
+}
+
+.btn-primary:hover {
+    background-color: #0052FF;
+}
+
+.btn-secondary {
+    background-color: #FFFFFF;
+    color: #1F2937;
+    border: 1px solid #CBD5E1;
+}
+
+.btn-secondary:hover {
+    background-color: #F8FAFC;
+}
+
+/* Streamlit Button Styling Overrides */
+button[data-testid="stBaseButton-secondary"], 
+div[data-testid="stBaseButton-secondary"] button {
+    background-color: #FFFFFF !important;
+    color: #1F2937 !important;
+    border: 1px solid #CBD5E1 !important;
+    border-radius: 12px !important;
+    padding: 10px 24px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    transition: background-color 0.2s !important;
+    cursor: pointer !important;
+    width: 100% !important;
+    height: 42px !important;
+}
+button[data-testid="stBaseButton-secondary"]:hover, 
+div[data-testid="stBaseButton-secondary"] button:hover {
+    background-color: #F8FAFC !important;
+    border-color: #CBD5E1 !important;
+    color: #1F2937 !important;
+}
+
+button[data-testid="stBaseButton-primary"], 
+div[data-testid="stBaseButton-primary"] button {
+    background-color: #0066FF !important;
+    color: #FFFFFF !important;
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 10px 24px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    transition: background-color 0.2s !important;
+    cursor: pointer !important;
+    width: 100% !important;
+    height: 42px !important;
+}
+button[data-testid="stBaseButton-primary"]:hover, 
+div[data-testid="stBaseButton-primary"] button:hover {
+    background-color: #0052FF !important;
+    color: #FFFFFF !important;
+}
+
+/* Resume Preview Component styles */
+.preview-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 32px;
+    margin-top: 16px;
+}
+
+.preview-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.preview-main {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.resume-thumbnail {
+    width: 100%;
+    min-height: 200px;
+    background-color: #F8FAFC;
+    border: 1px solid #CBD5E1;
+    border-radius: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #64748B;
+    font-size: 48px;
+    flex-direction: column;
+    gap: 12px;
+    padding: 24px;
+    box-sizing: border-box;
+}
+
+.tag-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* Responsive Overrides */
+@media (max-width: 1024px) {
+    .grid-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .grid-span-2, .grid-span-3, .grid-span-4 {
+        grid-column: span 2;
+    }
+    .preview-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        display: grid !important;
+        grid-template-areas: 
+            "logo actions"
+            "menu menu" !important;
+        grid-template-columns: 1fr auto !important;
+        height: auto !important;
+        min-height: 72px !important;
+        padding: 12px 16px !important;
+        gap: 12px !important;
+        border-radius: 14px !important;
+    }
+    
+    .navbar-logo {
+        grid-area: logo !important;
+        align-self: center !important;
+        font-size: 16px !important;
+    }
+    
+    .navbar-logo span {
+        display: none !important;
+    }
+    
+    .navbar-menu {
+        grid-area: menu !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+        gap: 4px !important;
+    }
+    
+    .navbar-actions {
+        grid-area: actions !important;
+        align-self: center !important;
+    }
+    
+    .nav-item {
+        padding: 8px 6px !important;
+        font-size: 11.5px !important;
+        flex-grow: 1 !important;
+        justify-content: center !important;
+        text-align: center !important;
+        gap: 4px !important;
+    }
+    
+    .login-btn {
+        padding: 8px 16px !important;
+        font-size: 13px !important;
+        border-radius: 8px !important;
+    }
+
+    .resume-sheet {
+        padding: 24px 16px !important;
+        gap: 20px !important;
+    }
+    
+    .resume-name {
+        font-size: 24px !important;
+    }
+    
+    .resume-contact {
+        font-size: 11px !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .grid-container {
+        grid-template-columns: 1fr;
+    }
+    .grid-span-2, .grid-span-3, .grid-span-4 {
+        grid-column: span 1;
+    }
+    .hero-title {
+        font-size: 32px;
+    }
+}
+
+/* Style Streamlit containers with border=True to look like cards */
+/* Scoped to avoid impacting Streamlit column wrapper internals */
+div[data-testid="stVerticalBlockBorderWrapper"] {
+    background-color: #FFFFFF !important;
+    border: 1px solid #CBD5E1 !important;
+    border-radius: 16px !important;
+    padding: 20px !important;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.02) !important;
+    box-sizing: border-box !important;
+}
+
+/* Prevent double-nesting padding on inner divs */
+div[data-testid="stVerticalBlockBorderWrapper"] > div[data-testid="stVerticalBlock"] {
+    padding: 0 !important;
+    gap: 12px !important;
+}
+
+/* Style standard Streamlit text inputs and textareas */
+div[data-testid="stTextArea"] textarea,
+div[data-testid="stTextInput"] input {
+    background-color: #F8FAFC !important;
+    border: 1px solid #CBD5E1 !important;
+    border-radius: 12px !important;
+    color: #1F2937 !important;
+    -webkit-text-fill-color: #1F2937 !important;
+    font-family: 'Inter', sans-serif !important;
+    padding: 12px !important;
+    font-size: 14px !important;
+}
+
+div[data-testid="stTextArea"] textarea::placeholder,
+div[data-testid="stTextInput"] input::placeholder {
+    color: #94A3B8 !important;
+    -webkit-text-fill-color: #94A3B8 !important;
+}
+
+div[data-testid="stTextArea"] textarea:focus,
+div[data-testid="stTextInput"] input:focus {
+    border-color: #0066FF !important;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
+    outline: none !important;
+    background-color: #FFFFFF !important;
+}
+
+/* Optimized Resume Document Page Styling */
+.badge-ai {
+    display: inline-flex;
+    align-items: center;
+    background-color: #EFF6FF;
+    color: #0066FF;
+    border: 1px solid #DBEAFE;
+    padding: 6px 16px;
+    border-radius: 9999px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+}
+
+.optimize-layout {
+    display: grid;
+    grid-template-columns: 200px 800px;
+    gap: 24px;
+    width: 1024px;
+    max-width: 100%;
+    margin: 24px auto 100px auto;
+    position: relative;
+}
+
+.annotation-bar {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.annotation-item {
+    position: absolute;
+    left: 0;
+    width: 180px;
+    text-align: right;
+    box-sizing: border-box;
+    padding-right: 16px;
+    border-right: 2px solid #DBEAFE;
+}
+
+.annotation-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #0066FF;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+}
+
+.annotation-text {
+    font-size: 12px;
+    color: #64748B;
+    line-height: 1.4;
+    font-style: italic;
+}
+
+.resume-sheet {
+    background-color: #FFFFFF;
+    border: 1px solid #CBD5E1;
+    border-radius: 16px;
+    padding: 48px;
+    box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.03);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    text-align: left;
+    color: #1F2937;
+}
+
+.resume-header {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid #E2E8F0;
+    padding-bottom: 20px;
+}
+
+.resume-name {
+    font-size: 32px;
+    font-weight: 700;
+    margin: 0;
+    color: #1F2937;
+}
+
+.resume-contact {
+    font-size: 13px;
+    color: #4B5563;
+    line-height: 1.4;
+}
+
+.resume-contact a {
+    color: #0066FF !important;
+    text-decoration: none !important;
+}
+
+.resume-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.resume-section-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #0066FF;
+    letter-spacing: 0.08em;
+    border-bottom: 1px solid #E2E8F0;
+    padding-bottom: 6px;
+    margin: 0;
+}
+
+.resume-summary-box {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #374151;
+    background-color: #F8FAFC;
+    border-left: 4px solid #0066FF;
+    padding: 16px;
+    border-radius: 4px;
+}
+
+.resume-summary-box strong {
+    color: #0066FF;
+}
+
+.resume-job {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.resume-job-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.resume-job-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1F2937;
+}
+
+.resume-job-date {
+    font-size: 13px;
+    color: #6B7280;
+    font-style: italic;
+}
+
+.resume-job-company {
+    font-size: 13px;
+    font-weight: 600;
+    color: #0066FF;
+}
+
+.resume-bullets {
+    margin: 0;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.resume-bullet-item {
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: #374151;
+}
+
+.resume-highlight-blue {
+    background-color: #EFF6FF;
+    border-left: 3px solid #0066FF;
+    padding: 8px 12px;
+    border-radius: 0 4px 4px 0;
+    margin-left: -15px;
+}
+
+.resume-highlight-green {
+    background-color: #F0FDF4;
+    border-left: 3px solid #16A34A;
+    padding: 8px 12px;
+    border-radius: 0 4px 4px 0;
+    margin-left: -15px;
+}
+
+.resume-highlight-blue strong {
+    color: #0052FF;
+}
+
+.resume-highlight-green strong {
+    color: #15803D;
+}
+
+.skills-grid {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 16px;
+    font-size: 13px;
+    align-items: center;
+}
+
+.skills-category {
+    font-weight: 700;
+    color: #4B5563;
+    font-size: 11px;
+    text-transform: uppercase;
+}
+
+.skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.skill-tag-active {
+    background-color: #DBEAFE !important;
+    color: #0066FF !important;
+    border: 1px solid #BFDBFE !important;
+}
+
+/* Responsive optimize layout */
+@media (max-width: 1024px) {
+    .optimize-layout {
+        grid-template-columns: 1fr;
+        width: 100%;
+    }
+    .annotation-bar {
+        display: none;
+    }
+}
+
+
+/* ─── Premium Global Footer Styles ─── */
+.footer-wrapper {
+    width: 100%;
+    margin-top: 64px;
+    padding-bottom: 32px;
+    box-sizing: border-box;
+}
+
+.footer-divider {
+    width: 100%;
+    height: 1px;
+    background-color: #E2E8F0;
+    margin-bottom: 24px;
+}
+
+.footer-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.footer-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.footer-brand {
+    font-weight: 700;
+    font-size: 14px;
+    color: #1F2937;
+}
+
+.footer-tagline {
+    font-size: 12px;
+    color: #64748B;
+    margin: 0;
+}
+
+.footer-middle {
+    font-size: 13.5px;
+    color: #4B5563;
+    text-align: center;
+}
+
+.footer-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.footer-link {
+    font-size: 13px;
+    color: #0066FF !important;
+    text-decoration: none !important;
+    font-weight: 600;
+}
+
+.footer-link:hover {
+    text-decoration: underline !important;
+}
+
+.footer-socials {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.footer-socials a {
+    transition: opacity 0.2s, transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.footer-socials a:hover {
+    opacity: 0.8;
+    transform: scale(1.08);
+}
+
+.footer-security-row {
+    width: 100%;
+    text-align: center;
+    margin-top: 24px;
+    font-size: 11px;
+    color: #94A3B8;
+}
+
+/* ─── Animations ─── */
+@keyframes heart-pulse {
+    0% { transform: scale(1); }
+    14% { transform: scale(1.12); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.12); }
+    70% { transform: scale(1); }
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Apply fade-in animation to streamlit cards, custom cards, and optimized sheets */
+div[data-testid="stVerticalBlockBorderWrapper"],
+.card,
+.resume-sheet {
+    animation: fade-in 0.45s ease-out forwards;
+}
+
+/* Responsive Footer adjustments */
+@media (max-width: 640px) {
+    .footer-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+    }
+    .footer-left, .footer-right {
+        align-items: center;
+        text-align: center;
+    }
+}
+
+
+
