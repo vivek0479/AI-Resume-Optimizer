@@ -14,42 +14,136 @@ try:
 except ImportError:
     python_docx = None
 
-# ─── Optional API key fallback (from environment or user settings) ──────────
-_DEFAULT_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
+# ─── API key handling (environment / Streamlit secrets / legacy config) ───
 _MODEL_NAME = "gemini-2.5-flash"
 _CONFIG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json")
+_STREAMLIT_SECRETS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".streamlit", "secrets.toml")
+
+
+def _load_streamlit_secrets() -> str:
+    """Read Gemini API key from Streamlit secrets if available."""
+    try:
+        import streamlit as st
+        secrets = getattr(st, "secrets", None)
+        if secrets:
+            value = secrets.get("GEMINI_API_KEY", "")
+            if isinstance(value, str):
+                return value.strip()
+    except Exception:
+        pass
+    return ""
+
+
+def _load_secrets_file() -> str:
+    """Read Gemini API key from a local .streamlit/secrets.toml file."""
+    if not os.path.exists(_STREAMLIT_SECRETS_PATH):
+        return ""
+
+    try:
+        with open(_STREAMLIT_SECRETS_PATH, "r", encoding="utf-8") as f:
+            content = f.read()
+
+        try:
+            import tomllib
+            data = tomllib.loads(content)
+        except Exception:
+            data = {}
+            section = None
+            for line in content.splitlines():
+                cleaned = line.strip()
+                if not cleaned or cleaned.startswith("#"):
+                    continue
+                if cleaned.startswith("[") and cleaned.endswith("]"):
+                    section = cleaned[1:-1].strip().lower()
+                    continue
+                if "=" in cleaned and section:
+                    key, value = [part.strip() for part in cleaned.split("=", 1)]
+                    if value.startswith('"') and value.endswith('"'):
+                        value = value[1:-1]
+                    data.setdefault(section, {})[key] = value
+
+        if isinstance(data, dict):
+            for section_name in ("general", "default"):
+                section = data.get(section_name)
+                if isinstance(section, dict):
+                    value = section.get("GEMINI_API_KEY", "")
+                    if isinstance(value, str) and value.strip():
+                        return value.strip()
+            if isinstance(data.get("GEMINI_API_KEY"), str):
+                return data["GEMINI_API_KEY"].strip()
+    except Exception:
+        pass
+
+    return ""
+
+
+def _get_persisted_api_key() -> str:
+    """Return the stored API key from env, Streamlit secrets, or the local secrets file."""
+    env_key = os.getenv("GEMINI_API_KEY", "").strip()
+    if env_key:
+        return env_key
+
+    streamlit_key = _load_streamlit_secrets()
+    if streamlit_key:
+        return streamlit_key
+
+    return _load_secrets_file()
+
+
+def save_api_key(api_key: str) -> None:
+    """Persist the API key securely in a local Streamlit secrets file."""
+    api_key = (api_key or "").strip()
+    os.makedirs(os.path.dirname(_STREAMLIT_SECRETS_PATH), exist_ok=True)
+
+    if api_key:
+        os.environ["GEMINI_API_KEY"] = api_key
+        with open(_STREAMLIT_SECRETS_PATH, "w", encoding="utf-8") as f:
+            f.write("[general]\n")
+            f.write(f'GEMINI_API_KEY = "{api_key}"\n')
+    else:
+        os.environ.pop("GEMINI_API_KEY", None)
+        if os.path.exists(_STREAMLIT_SECRETS_PATH):
+            try:
+                os.remove(_STREAMLIT_SECRETS_PATH)
+            except Exception:
+                pass
+
 
 def load_config() -> dict:
-    """Load persistent config from config.json."""
+    """Load the persisted API key from secure storage, migrating legacy config.json if needed."""
     try:
         with open(_CONFIG_PATH, "r", encoding="utf-8") as f:
-            return json.load(f)
+            legacy_data = json.load(f)
+        if isinstance(legacy_data, dict):
+            legacy_key = str(legacy_data.get("user_api_key", "")).strip()
+            if legacy_key:
+                save_api_key(legacy_key)
+                try:
+                    os.remove(_CONFIG_PATH)
+                except Exception:
+                    pass
+                return {"user_api_key": legacy_key}
     except Exception:
-        return {"user_api_key": ""}
+        pass
+
+    return {"user_api_key": _get_persisted_api_key()}
+
 
 def save_config(data: dict) -> None:
-    """Save config dict to config.json."""
-    try:
-        existing = load_config()
-        existing.update(data)
-        with open(_CONFIG_PATH, "w", encoding="utf-8") as f:
-            json.dump(existing, f, indent=2)
-    except Exception:
-        pass  # Non-fatal — app still works without persistence
+    """Save config data securely without writing plaintext secrets to the repository."""
+    if "user_api_key" in data:
+        save_api_key(data.get("user_api_key", ""))
+
 
 def get_active_api_key() -> str:
-    """
-    Returns the API key to use for Gemini calls.
-    Priority: user's saved key > environment key > no key.
-    """
+    """Return the API key to use for Gemini calls."""
     cfg = load_config()
-    user_key = cfg.get("user_api_key", "").strip()
-    return user_key if user_key else _DEFAULT_API_KEY
+    return cfg.get("user_api_key", "").strip()
+
 
 def is_using_default_key() -> bool:
-    """True when no custom user key or environment key is configured."""
-    cfg = load_config()
-    return not cfg.get("user_api_key", "").strip() and not _DEFAULT_API_KEY
+    """True when no personal API key is configured."""
+    return not bool(get_active_api_key())
 
 def is_quota_error(error: Exception) -> bool:
     """Detect Gemini rate-limit / quota-exceeded errors."""

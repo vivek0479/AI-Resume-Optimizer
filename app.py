@@ -79,52 +79,114 @@ if active_page == "home":
     
     # STAGE 1: UPLOAD STATE
     if st.session_state.analysis_stage == "upload":
-        # Two-column grid matching the reference design layout
+        # Handle query parameter trigger from navbar "Get Started" button
+        if st.query_params.get("get_started") == "true":
+            st.session_state.show_uploader = True
+            # Clear parameter to prevent loop
+            st.query_params.pop("get_started", None)
+
+        # ─── FOLD 1: HERO SECTION ───
         col_hero_left, col_hero_right = st.columns([1.2, 1])
         
         with col_hero_left:
             st.markdown(components.clean_html("""
-            <div style="display:flex; flex-direction:column; justify-content:center; height:100%; padding:40px 0; text-align:left;">
-                <span class="badge-ai" style="width:fit-content; margin-bottom:20px; font-weight:700;">✨ 100% Free &amp; Secure</span>
-                <h1 class="hero-title" style="text-align:left; font-size:44px; line-height:1.2; margin-bottom:20px; letter-spacing:-0.03em;">Optimize Your Resume Background</h1>
+            <div style="display:flex; flex-direction:column; justify-content:center; height:100%; padding:20px 0; text-align:left;">
+                <span class="badge-ai" style="width:fit-content; margin-bottom:20px; font-weight:700; background-color:#EFF6FF; color:#0066FF; border: 1px solid #DBEAFE; padding: 6px 14px; border-radius: 9999px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;">✨ NEW: GPT-4O POWERED ANALYSIS</span>
+                <h1 class="hero-title" style="text-align:left; font-size:48px; line-height:1.15; margin-bottom:20px; letter-spacing:-0.03em; font-weight:800; color:#1F2937;">
+                    Land your dream job with <span style="color:#0066FF;">AI-powered</span> resume precision.
+                </h1>
                 <p class="hero-subtitle" style="text-align:left; margin:0 0 32px 0; max-width:540px; font-size:16px; line-height:1.7; color:#64748B;">
-                    Get instant, AI-powered feedback to align your resume with target job descriptions, beat automated ATS screening systems, and land more interviews.
+                    Our intelligent platform analyzes your resume against industry standards, injects missing high-impact keywords, and optimizes your layout to guarantee a 95%+ ATS compatibility score.
                 </p>
-                <div style="display:flex; gap:16px; align-items:center; background:#FFFFFF; border:1px solid #E2E8F0; border-radius:16px; padding:16px 20px; max-width:480px;">
-                    <div style="font-size:32px;">🛡️</div>
-                    <div style="font-size:13px; color:#475569; line-height:1.5;">
-                        <strong style="color:#1F2937;">Privacy-First Analysis</strong><br>Your files are parsed strictly in memory and are never saved or stored.
-                    </div>
-                </div>
             </div>
+            """), unsafe_allow_html=True)
+            
+            # Action Buttons Row
+            btn_col1, btn_col2 = st.columns([1.1, 1])
+            with btn_col1:
+                # Custom button via Streamlit
+                if st.button("Get Started for Free", type="primary", use_container_width=True, key="hero_get_started"):
+                    st.session_state.show_uploader = True
+                    st.rerun()
+            with btn_col2:
+                if st.button("💬 Watch Demo", type="secondary", use_container_width=True, key="hero_watch_demo"):
+                    st.toast("⚡ Demo video coming soon!")
+                    
+            st.markdown(components.clean_html("""
+            <p style="font-size:12px; color:#94A3B8; margin-top:14px; margin-bottom:0;">No credit card required • Free trial for 30 days</p>
             """), unsafe_allow_html=True)
             
         with col_hero_right:
-            st.markdown('<div class="home-page" style="padding: 20px 0;">', unsafe_allow_html=True)
-            # Native Streamlit uploader
-            uploaded_file = st.file_uploader(
-                "Upload Resume",
-                type=["pdf", "docx"],
-                label_visibility="collapsed",
-                key="resume_uploader"
-            )
-            st.markdown('</div>', unsafe_allow_html=True)
-            
-            # Trusted companies list similar to "No image? Try one of these" row in design reference
-            st.markdown(components.clean_html("""
-            <div style="text-align:center; margin-top:-12px; padding:0 20px;">
-                <div style="font-size:12px; color:#94A3B8; margin-bottom:12px; font-weight:500; text-transform:uppercase; letter-spacing:0.05em;">Trusted by candidates at leading tech companies</div>
-                <div style="display:flex; justify-content:center; align-items:center; gap:12px; flex-wrap:wrap;">
-                    <span class="chip" style="background:#F8FAFC; color:#64748B; font-size:11px; font-weight:700; border:1px solid #E2E8F0; padding:6px 12px; border-radius:9999px;">Google</span>
-                    <span class="chip" style="background:#F8FAFC; color:#64748B; font-size:11px; font-weight:700; border:1px solid #E2E8F0; padding:6px 12px; border-radius:9999px;">Meta</span>
-                    <span class="chip" style="background:#F8FAFC; color:#64748B; font-size:11px; font-weight:700; border:1px solid #E2E8F0; padding:6px 12px; border-radius:9999px;">Amazon</span>
-                    <span class="chip" style="background:#F8FAFC; color:#64748B; font-size:11px; font-weight:700; border:1px solid #E2E8F0; padding:6px 12px; border-radius:9999px;">Netflix</span>
+            if st.session_state.get("show_uploader", False):
+                # The Active File Uploader Box
+                st.markdown('<div class="home-page" style="padding: 10px 0; position:relative;">', unsafe_allow_html=True)
+                if st.button("← Back to Preview", type="secondary", key="back_to_preview_uploader"):
+                    st.session_state.show_uploader = False
+                    st.rerun()
+                
+                uploaded_file = st.file_uploader(
+                    "Upload Resume",
+                    type=["pdf", "docx"],
+                    label_visibility="collapsed",
+                    key="resume_uploader"
+                )
+                st.markdown('</div>', unsafe_allow_html=True)
+            else:
+                # The Beautiful HTML/CSS Mockup Preview Card from the mockup design
+                st.markdown(components.clean_html("""
+                <div style="display:flex; justify-content:center; align-items:center; height:100%; padding:20px 0;">
+                    <div class="mockup-container">
+                        <div class="mockup-badge-top">
+                            <span class="dot-blue"></span> Keyword Optimized
+                        </div>
+                        <div class="mockup-badge-bottom">
+                            <span class="check-green">✓</span> ATS Score: <strong>98/100</strong>
+                        </div>
+                        <div class="mockup-split">
+                            <div class="mockup-pane">
+                                <div class="pane-header" style="display:flex; align-items:center; gap:8px;">
+                                    <div class="pane-avatar"></div>
+                                    <div style="flex:1; display:flex; flex-direction:column; gap:4px;">
+                                        <div class="pane-line short"></div>
+                                        <div class="pane-line medium"></div>
+                                    </div>
+                                </div>
+                                <div class="pane-body" style="display:flex; flex-direction:column; gap:6px; margin-top:8px;">
+                                    <div class="pane-line long"></div>
+                                    <div class="pane-line long red-strike"></div>
+                                    <div class="pane-line medium"></div>
+                                    <div class="pane-line long"></div>
+                                </div>
+                            </div>
+                            <div class="mockup-pane">
+                                <div class="pane-header" style="display:flex; align-items:center; gap:8px;">
+                                    <div class="pane-avatar" style="background:#DBEAFE;"></div>
+                                    <div style="flex:1; display:flex; flex-direction:column; gap:4px;">
+                                        <div class="pane-line short" style="background:#93C5FD;"></div>
+                                        <div class="pane-line medium"></div>
+                                    </div>
+                                </div>
+                                <div class="pane-body" style="display:flex; flex-direction:column; gap:6px; margin-top:8px;">
+                                    <div class="pane-line long"></div>
+                                    <div class="pane-line long green-highlight"></div>
+                                    <div class="pane-line medium"></div>
+                                    <div class="pane-line long" style="background:#EFF6FF;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            """), unsafe_allow_html=True)
-        
+                """), unsafe_allow_html=True)
+                
+                # Link to open uploader
+                col_trig, _ = st.columns([1.5, 1])
+                with col_trig:
+                    if st.button("⚡ Click here to upload your resume", type="secondary", key="trigger_uploader_link"):
+                        st.session_state.show_uploader = True
+                        st.rerun()
+
         # Handle file upload trigger
-        if uploaded_file is not None:
+        if st.session_state.get("show_uploader", False) and 'uploaded_file' in locals() and uploaded_file is not None:
             # Sync uploaded file into session state
             if st.session_state.file_name != uploaded_file.name:
                 file_bytes = uploaded_file.read()
@@ -139,7 +201,122 @@ if active_page == "home":
                 )
                 st.session_state.analysis_stage = "preview"
                 st.rerun()
-        st.markdown('<div class="footer-text" style="margin-top:40px;">🔒 Safe, secure, and encrypted processing.</div>', unsafe_allow_html=True)
+
+        # ─── FOLD 2: STATISTICS STRIP ───
+        st.markdown('<div style="height:48px;"></div>', unsafe_allow_html=True)
+        st.markdown(components.clean_html("""
+        <div class="stats-strip">
+            <div class="stat-item">
+                <div style="font-size:32px; font-weight:800; color:#0066FF;">95%</div>
+                <div style="font-size:12px; color:#64748B; font-weight:600; text-transform:uppercase; margin-top:4px;">Candidate Success Rate</div>
+            </div>
+            <div class="stat-item">
+                <div style="font-size:32px; font-weight:800; color:#1F2937;">10k+</div>
+                <div style="font-size:12px; color:#64748B; font-weight:600; text-transform:uppercase; margin-top:4px;">Resumes Optimized</div>
+            </div>
+            <div class="stat-item">
+                <div style="font-size:32px; font-weight:800; color:#1F2937;">1.5M</div>
+                <div style="font-size:12px; color:#64748B; font-weight:600; text-transform:uppercase; margin-top:4px;">Job Leads Found</div>
+            </div>
+            <div class="stat-item-last">
+                <div style="font-size:11px; color:#94A3B8; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px;">Trusted by Candidates at</div>
+                <div style="display:flex; justify-content:center; gap:12px; align-items:center; flex-wrap:wrap;">
+                    <span style="font-size:12px; font-weight:700; color:#64748B;">Google</span>
+                    <span style="font-size:12px; font-weight:700; color:#64748B;">Meta</span>
+                    <span style="font-size:12px; font-weight:700; color:#64748B;">Amazon</span>
+                </div>
+            </div>
+        </div>
+        """), unsafe_allow_html=True)
+
+        # ─── FOLD 3: FEATURES GRID (ENGINEERED FOR SUCCESS) ───
+        st.markdown('<div style="height:64px;"></div>', unsafe_allow_html=True)
+        st.markdown(components.clean_html("""
+        <div style="text-align:center; max-width:600px; margin:0 auto 40px auto;">
+            <h2 style="font-size:28px; font-weight:800; color:#1F2937; margin-bottom:12px; letter-spacing:-0.02em;">Engineered for Success</h2>
+            <p style="font-size:14.5px; color:#64748B; line-height:1.6;">Our specialized AI models are trained on thousands of successful hires across the tech and finance industries.</p>
+        </div>
+        """), unsafe_allow_html=True)
+        
+        feat_col1, feat_col2, feat_col3 = st.columns(3)
+        with feat_col1:
+            st.markdown(components.clean_html("""
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">⚙️</div>
+                <h3 style="font-size:16px; font-weight:700; color:#1F2937; margin:0 0 8px 0;">ATS Optimization</h3>
+                <p style="font-size:13px; color:#64748B; line-height:1.6; margin:0;">Beat the bots with structured formats that applicant tracking systems love. We ensure your data is always readable and relevant.</p>
+            </div>
+            """), unsafe_allow_html=True)
+        with feat_col2:
+            st.markdown(components.clean_html("""
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">🔑</div>
+                <h3 style="font-size:16px; font-weight:700; color:#1F2937; margin:0 0 8px 0;">Smart Keyword Injection</h3>
+                <p style="font-size:13px; color:#64748B; line-height:1.6; margin:0;">Our AI cross-references your resume with job descriptions to automatically suggest and place the most critical missing skills.</p>
+            </div>
+            """), unsafe_allow_html=True)
+        with feat_col3:
+            st.markdown(components.clean_html("""
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">📈</div>
+                <h3 style="font-size:16px; font-weight:700; color:#1F2937; margin:0 0 8px 0;">Quantifiable Impact</h3>
+                <p style="font-size:13px; color:#64748B; line-height:1.6; margin:0;">We turn generic job duties into powerful achievements using our formulaic approach to impact-based resume writing.</p>
+            </div>
+            """), unsafe_allow_html=True)
+
+        # ─── FOLD 4: HOW IT WORKS ───
+        st.markdown('<div style="height:64px;"></div>', unsafe_allow_html=True)
+        how_col_left, how_col_right = st.columns([1, 1.8])
+        with how_col_left:
+            st.markdown(components.clean_html("""
+            <div style="display:flex; flex-direction:column; justify-content:center; height:100%; text-align:left;">
+                <h2 style="font-size:28px; font-weight:800; color:#1F2937; margin-bottom:16px; letter-spacing:-0.02em; line-height:1.2;">Perfect your resume in 3 easy steps</h2>
+                <p style="font-size:14.5px; color:#64748B; line-height:1.6; margin:0 0 24px 0;">Simple, transparent, and built for professionals who value their time.</p>
+                <a href="#hero_get_started" style="color:#0066FF; font-size:14px; font-weight:700; text-decoration:none;">Learn about our algorithm →</a>
+            </div>
+            """), unsafe_allow_html=True)
+        with how_col_right:
+            step_col1, step_col2, step_col3 = st.columns(3)
+            with step_col1:
+                st.markdown(components.clean_html("""
+                <div class="feature-card" style="border:1px solid #E2E8F0;">
+                    <div class="step-number-badge">1</div>
+                    <h3 style="font-size:15px; font-weight:700; color:#1F2937; margin:0 0 8px 0;">Upload</h3>
+                    <p style="font-size:12.5px; color:#64748B; line-height:1.5; margin:0;">Drag and drop your current PDF or Word resume. Our parser handles everything.</p>
+                </div>
+                """), unsafe_allow_html=True)
+            with step_col2:
+                st.markdown(components.clean_html("""
+                <div class="feature-card" style="border:1px solid #E2E8F0;">
+                    <div class="step-number-badge">2</div>
+                    <h3 style="font-size:15px; font-weight:700; color:#1F2937; margin:0 0 8px 0;">Analyze</h3>
+                    <p style="font-size:12.5px; color:#64748B; line-height:1.5; margin:0;">Our AI runs 50+ health checks against top-tier industry benchmarks.</p>
+                </div>
+                """), unsafe_allow_html=True)
+            with step_col3:
+                st.markdown(components.clean_html("""
+                <div class="feature-card" style="border:1px solid #E2E8F0;">
+                    <div class="step-number-badge">3</div>
+                    <h3 style="font-size:15px; font-weight:700; color:#1F2937; margin:0 0 8px 0;">Perfect</h3>
+                    <p style="font-size:12.5px; color:#64748B; line-height:1.5; margin:0;">Apply one-click suggestions and download your optimized, ready-to-send resume.</p>
+                </div>
+                """), unsafe_allow_html=True)
+
+        # ─── FOLD 5: CALL TO ACTION (CTA) ───
+        st.markdown('<div style="height:64px;"></div>', unsafe_allow_html=True)
+        st.markdown(components.clean_html("""
+        <div class="cta-box">
+            <h2 style="font-size:32px; font-weight:800; color:#FFFFFF; margin-bottom:16px; letter-spacing:-0.02em;">Ready to secure your next interview?</h2>
+            <p style="font-size:15px; color:#E0F2FE; max-width:540px; margin:0 auto 24px auto; line-height:1.6;">Join over 10,000 professionals who have leveled up their careers with AI Resume Optimizer. Start for free today.</p>
+            <div style="display:flex; justify-content:center; gap:16px; flex-wrap:wrap; margin-top:16px;">
+                <a href="?page=home&get_started=true" class="cta-btn-white" target="_self">Get Started for Free</a>
+                <a href="?page=home&get_started=true" class="cta-btn-outline" target="_self">View Sample Resumes</a>
+            </div>
+        </div>
+        """), unsafe_allow_html=True)
+
+        st.markdown('<div style="height:48px;"></div>', unsafe_allow_html=True)
+
 
     # STAGE 2: PREVIEW STATE
     elif st.session_state.analysis_stage == "preview":
@@ -509,11 +686,13 @@ elif active_page == "cover_letter":
     
     if not st.session_state.file_name:
         st.markdown(components.clean_html("""
-        <div class="card" style="align-items: center; justify-content: center; min-height: 240px;">
-            <div style="font-size: 48px; margin-bottom: 8px;">📄</div>
-            <div class="card-title">No Resume Uploaded</div>
-            <p style="color:#64748B; font-size:14px; text-align:center;">Please upload your resume on the Home page first to generate a tailored cover letter.</p>
-            <a href="?page=home" class="login-btn" style="text-decoration:none; margin-top:12px;" target="_self">Go to Home</a>
+        <div style="max-width: 600px; margin: 40px auto; width: 100%;">
+            <div class="card" style="align-items: center; justify-content: center; min-height: 240px; padding: 40px 24px; text-align: center;">
+                <div style="font-size: 48px; margin-bottom: 12px;">📄</div>
+                <div class="card-title" style="font-size: 20px; margin-bottom: 8px;">No Resume Uploaded</div>
+                <p style="color:#64748B; font-size:14.5px; line-height:1.6; margin-bottom: 20px;">Please upload your resume on the Home page first to generate a tailored cover letter.</p>
+                <a href="?page=home" class="login-btn" style="text-decoration:none;" target="_self">Go to Home</a>
+            </div>
         </div>
         """), unsafe_allow_html=True)
     else:
@@ -617,10 +796,9 @@ elif active_page == "settings":
         with col_set1:
             if st.button("Save Key", type="primary", use_container_width=True):
                 st.session_state.api_key = api_key_input
-                # Persist to config.json so it survives refresh
                 backend.save_config({"user_api_key": api_key_input})
                 st.session_state.quota_exceeded = False  # reset quota flag
-                st.success("✓ API Key saved — will persist across refreshes!")
+                st.success("✓ API Key saved securely for this machine.")
                 st.rerun()
         with col_set2:
             if st.button("Test Connection", type="secondary", use_container_width=True):
@@ -644,7 +822,7 @@ elif active_page == "settings":
                 st.session_state.api_key = ""
                 backend.save_config({"user_api_key": ""})
                 st.session_state.quota_exceeded = False
-                st.success("✓ Reverted to built-in shared key.")
+                st.success("✓ Cleared the saved personal key.")
                 st.rerun()
 
     st.markdown('<div style="height:16px;"></div>', unsafe_allow_html=True)
