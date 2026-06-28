@@ -190,7 +190,7 @@ def render_ai_resume(resume_data: dict):
         for c in changes
     )
 
-    html = f"""
+    resume_html = f"""
 {error_html}
 <div style="text-align:center; margin-bottom:12px;">
 <span style="display:inline-flex; align-items:center; background-color:{badge_color}; color:{badge_text_color}; border:1px solid {badge_border}; padding:6px 16px; border-radius:9999px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em;">{badge_label}</span>
@@ -232,7 +232,7 @@ def render_ai_resume(resume_data: dict):
 </div>
 </div>
 """
-    st.markdown(clean_html(html), unsafe_allow_html=True)
+    st.markdown(clean_html(resume_html), unsafe_allow_html=True)
 
 
 
