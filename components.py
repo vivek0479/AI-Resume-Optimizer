@@ -1,5 +1,20 @@
 import streamlit as st
 import html
+import base64
+import os
+
+def get_logo_base64():
+    """
+    Reads the logo image from the workspace and encodes it to Base64 for inline HTML rendering.
+    """
+    logo_path = os.path.join(os.path.dirname(__file__), "logo.png")
+    if os.path.exists(logo_path):
+        try:
+            with open(logo_path, "rb") as f:
+                return base64.b64encode(f.read()).decode("utf-8")
+        except Exception:
+            pass
+    return ""
 
 def clean_html(html_str: str) -> str:
     """
@@ -20,21 +35,40 @@ def render_navbar(active_page="home"):
     Renders the custom premium 72px navigation bar.
     Using query params for native page routing.
     """
-    # Create HTML structure for the navbar
+    logo_b64 = get_logo_base64()
+    if logo_b64:
+        logo_html = f'<img src="data:image/png;base64,{logo_b64}" class="navbar-logo-img" alt="Logo" style="width:24px; height:24px; object-fit:contain; align-self:center;">'
+    else:
+        logo_html = '📄'
+
+    # Create HTML structure for the navbar matching reference design with burger menu checkbox toggle
     navbar_html = f"""
 <div class="navbar-wrapper">
 <div class="navbar">
 <a href="?page=home" class="navbar-logo" target="_self">
-📄 <span>AI Resume Optimizer</span>
+{logo_html} <span class="navbar-logo-text">AI Resume Optimizer</span>
 </a>
+
+<input type="checkbox" id="navbar-menu-toggle" class="navbar-toggle-checkbox" style="display:none;">
+
+<label for="navbar-menu-toggle" class="burger-menu-btn">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+</label>
+
 <div class="navbar-menu">
-<a href="?page=home" class="nav-item {"active" if active_page == "home" else ""}" target="_self">🏠 Home</a>
-<a href="?page=cover_letter" class="nav-item {"active" if active_page == "cover_letter" else ""}" target="_self">📝 Cover Letter</a>
-<a href="?page=history" class="nav-item {"active" if active_page == "history" else ""}" target="_self">🕒 History</a>
-<a href="?page=settings" class="nav-item {"active" if active_page == "settings" else ""}" target="_self">⚙ Settings</a>
+<a href="?page=home" class="nav-item {"active" if active_page == "home" else ""}" target="_self">Home</a>
+<a href="?page=cover_letter" class="nav-item {"active" if active_page == "cover_letter" else ""}" target="_self">Cover Letter</a>
+<a href="?page=history" class="nav-item {"active" if active_page == "history" else ""}" target="_self">History</a>
+<a href="?page=settings" class="nav-item {"active" if active_page == "settings" else ""}" target="_self">Settings</a>
 </div>
+
 <div class="navbar-actions">
-<a href="?page=login" class="login-btn" target="_self">Login</a>
+<a href="?page=login" class="nav-login-link" target="_self">Login</a>
+<a href="?page=home&get_started=true" class="nav-get-started-btn" target="_self">Get Started</a>
 </div>
 </div>
 </div>
@@ -111,16 +145,25 @@ def render_ai_resume(resume_data: dict):
     badge_border = "#DBEAFE" if source == "gemini" else "#FED7AA"
     badge_text_color = "#2563EB" if source == "gemini" else "#C2410C"
 
+    # Guard against invalid/empty resume_data structure
+    if not isinstance(resume_data, dict):
+        resume_data = {}
+
+    def safe_escape(val, default=""):
+        if val is None:
+            return default
+        return html.escape(str(val))
+
     error_html = ""
     if resume_data.get("error"):
         error_html = f'<div style="background:#FEF2F2; border:1px solid #FCA5A5; border-radius:8px; padding:12px 16px; margin-bottom:16px; font-size:13px; color:#DC2626;">⚠ Gemini error — showing demo optimization: {resume_data["error"]}</div>'
 
     # ---- Header ----
-    name = html.escape(resume_data.get("name", "Your Name"))
-    contact = html.escape(resume_data.get("contact", ""))
+    name = safe_escape(resume_data.get("name", "Your Name"))
+    contact = safe_escape(resume_data.get("contact", ""))
 
     # ---- Summary ----
-    summary = html.escape(resume_data.get("summary", ""))
+    summary = safe_escape(resume_data.get("summary", ""))
 
     # ---- Experience bullets ----
     exp_html = ""
@@ -128,8 +171,8 @@ def render_ai_resume(resume_data: dict):
         bullets_html = ""
         for b in job.get("bullets", []):
             btype = b.get("type", "original")
-            annotation = html.escape(b.get("annotation", ""))
-            text = html.escape(b.get("text", ""))
+            annotation = safe_escape(b.get("annotation", ""))
+            text = safe_escape(b.get("text", ""))
             if btype == "rephrased":
                 bullet_class = "resume-highlight-blue"
                 prefix = f'<span style="font-size:11px; font-weight:700; color:#1D4ED8; text-transform:uppercase; letter-spacing:0.04em;">✏ Rephrased</span><br>' if annotation else ""
@@ -148,21 +191,21 @@ def render_ai_resume(resume_data: dict):
         exp_html += f"""
 <div class="resume-job">
 <div class="resume-job-header">
-<span class="resume-job-title">{html.escape(job.get("title", ""))}</span>
-<span class="resume-job-date">{html.escape(job.get("dates", ""))}</span>
+<span class="resume-job-title">{safe_escape(job.get("title", ""))}</span>
+<span class="resume-job-date">{safe_escape(job.get("dates", ""))}</span>
 </div>
-<div class="resume-job-company">{html.escape(job.get("company", ""))}</div>
+<div class="resume-job-company">{safe_escape(job.get("company", ""))}</div>
 <ul class="resume-bullets">{bullets_html}</ul>
 </div>"""
 
     # ---- Skills ----
     skills_html = ""
     for cat in resume_data.get("skills", {}).get("categories", []):
-        cat_name = html.escape(cat.get("name", ""))
+        cat_name = safe_escape(cat.get("name", ""))
         highlighted = cat.get("highlighted", [])
         items_html = "".join(
-            f'<span class="chip skill-tag-active">{html.escape(item)}</span>' if item in highlighted
-            else f'<span class="chip" style="background-color:#F1F5F9; color:#475569; border:1px solid #E2E8F0;">{html.escape(item)}</span>'
+            f'<span class="chip skill-tag-active">{safe_escape(item)}</span>' if item in highlighted
+            else f'<span class="chip" style="background-color:#F1F5F9; color:#475569; border:1px solid #E2E8F0;">{safe_escape(item)}</span>'
             for item in cat.get("items", [])
         )
         skills_html += f"""
@@ -177,16 +220,16 @@ def render_ai_resume(resume_data: dict):
         edu_html += f"""
 <div class="resume-job">
 <div class="resume-job-header">
-<span class="resume-job-title">{html.escape(edu.get("degree", ""))}</span>
-<span class="resume-job-date">{html.escape(edu.get("dates", ""))}</span>
+<span class="resume-job-title">{safe_escape(edu.get("degree", ""))}</span>
+<span class="resume-job-date">{safe_escape(edu.get("dates", ""))}</span>
 </div>
-<div class="resume-job-company" style="color:#4B5563;">{html.escape(edu.get("institution", ""))}</div>
+<div class="resume-job-company" style="color:#4B5563;">{safe_escape(edu.get("institution", ""))}</div>
 </div>"""
 
     # ---- Changes sidebar ----
     changes = resume_data.get("changes_summary", [])
     changes_html = "".join(
-        f'<div style="display:flex; gap:8px; align-items:flex-start; margin-bottom:10px;"><span style="color:#2563EB; font-size:16px; line-height:1.2;">›</span><span style="font-size:13px; color:#374151; line-height:1.5;">{html.escape(c)}</span></div>'
+        f'<div style="display:flex; gap:8px; align-items:flex-start; margin-bottom:10px;"><span style="color:#2563EB; font-size:16px; line-height:1.2;">›</span><span style="font-size:13px; color:#374151; line-height:1.5;">{safe_escape(c)}</span></div>'
         for c in changes
     )
 
@@ -388,12 +431,12 @@ def render_footer():
             <div class="footer-right">
                 <a href="mailto:vivekananda@example.com?subject=AI Resume Optimizer Feedback" class="footer-link">💬 Feedback &amp; Support</a>
                 <div class="footer-socials">
-                    <a href="https://github.com" target="_blank" aria-label="GitHub" style="color: #4B5563 !important;">
+                    <a href="https://github.com/vivek0479" target="_blank" aria-label="GitHub" style="color: #4B5563 !important;">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.579.688.481C19.137 20.162 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
                         </svg>
                     </a>
-                    <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn" style="color: #0A66C2 !important;">
+                    <a href="https://linkedin.com/in/bheemankar-vivekananda-262765376" target="_blank" aria-label="LinkedIn" style="color: #0A66C2 !important;">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
                         </svg>
